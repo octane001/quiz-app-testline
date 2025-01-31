@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biology Quiz</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .progress-bar {
+        transition: width 0.3s ease-in-out;
+      }
+
+      .option-button:hover {
+        transform: translateY(-2px);
+        transition: transform 0.2s;
+      }
+
+      .option-button.disabled {
+        pointer-events: none;
+        opacity: 0.7;
+      }
+
+      .explanation {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+      }
+
+      .explanation.show {
+        max-height: 500px;
+        transition: max-height 0.5s ease-in;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+      <!-- Header -->
+      <header class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Bio Quiz By -Testline </h1>
+        <p class="text-gray-600">
+          Test your knowledge of The Molecular Basis of Inheritance
+        </p>
+      </header>
+
+      <!-- Start Screen -->
+      <div id="start-screen" class="bg-white rounded-lg shadow-lg p-8 fade-in">
+        <div class="space-y-6 mb-8">
+          <div class="text-center">
+            <h2 class="text-2xl font-semibold mb-4">Quiz Rules</h2>
+            <div class="space-y-3 text-gray-600">
+              <div class="flex items-center justify-center gap-2">
+                <span class="text-green-500">✓</span>
+                <span>4.0 marks for correct answer</span>
+              </div>
+              <div class="flex items-center justify-center gap-2">
+                <span class="text-red-500">✗</span>
+                <span>-1.0 mark for wrong answer</span>
+              </div>
+              <div class="flex items-center justify-center gap-2">
+                <span class="text-blue-500">⏱️</span>
+                <span>15 minutes time limit</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          id="start-quiz"
+          class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg"
+        >
+          Start Quiz
+        </button>
+      </div>
+
+      <!-- Quiz Screen -->
+      <div
+        id="quiz-screen"
+        class="bg-white rounded-lg shadow-lg p-8 hidden fade-in"
+      >
+        <!-- Quiz Header -->
+        <div class="mb-6">
+          <div class="flex justify-between items-center mb-2">
+            <span id="question-number" class="text-gray-600"
+              >Question 1/10</span
+            >
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                <span class="text-gray-600">Score:</span>
+                <span id="current-score" class="font-semibold">0</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span>⏱️</span>
+                <span id="timer" class="text-gray-600">15:00</span>
+              </div>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div
+              id="progress-bar"
+              class="progress-bar bg-blue-600 h-2 rounded-full"
+              style="width: 0%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Question Content -->
+        <div class="mb-6">
+          <h2 id="question-text" class="text-xl font-semibold mb-4">
+            Loading question...
+          </h2>
+          <div id="options" class="space-y-3">
+            <!-- Options will be inserted here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Screen -->
+      <div
+        id="results-screen"
+        class="bg-white rounded-lg shadow-lg p-8 hidden fade-in"
+      >
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold mb-4">Quiz Complete!</h2>
+          <div class="text-6xl font-bold text-blue-600 mb-2" id="final-score">
+            0
+          </div>
+          <div class="text-gray-600">Total Score</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-8">
+          <div class="bg-gray-50 p-4 rounded-lg text-center">
+            <div class="text-2xl font-bold mb-1" id="correct-count">0/0</div>
+            <div class="text-gray-600">Correct Answers</div>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg text-center">
+            <div class="text-2xl font-bold mb-1" id="accuracy">0%</div>
+            <div class="text-gray-600">Accuracy</div>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg text-center">
+            <div class="text-2xl font-bold mb-1" id="time-taken">0:00</div>
+            <div class="text-gray-600">Time Taken</div>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg text-center">
+            <div class="text-2xl font-bold mb-1" id="max-streak">0</div>
+            <div class="text-gray-600">Max Streak</div>
+          </div>
+        </div>
+
+        <div id="answers-review" class="space-y-4 mb-8">
+          <h3 class="font-semibold mb-2">Question Review</h3>
+          <!-- Answer review items will be inserted here -->
+        </div>
+
+        <div class="flex gap-4">
+          <button
+            onclick="restartQuiz()"
+            class="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+          >
+            Try Again
+          </button>
+          <button
+            id="show-answers"
+            class="flex-1 bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors font-semibold"
+          >
+            Show Answers
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="quiz.js"></script>
+  </body>
+</html>
